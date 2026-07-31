@@ -1,0 +1,7 @@
+# Fill in exact versions as you install them today - pin everything,
+# so a fresh instance can reproduce your setup without guessing.
+langgraph
+openai
+fastapi
+uvicorn
+requests

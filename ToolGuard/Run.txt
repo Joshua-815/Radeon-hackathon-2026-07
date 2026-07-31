@@ -1,0 +1,30 @@
+TOOLGUARD - INSTANCE STARTUP NOTES
+(keep this file in the git repo, NOT just on the instance, from now on)
+
+Every time you launch a fresh Radeon Cloud instance:
+
+1) source /workspace/setup_env.sh
+
+2) apt update && apt install -y tmux
+
+3) tmux new -s vllm
+
+4) Inside tmux, start the model server:
+   /opt/venv/bin/vllm serve Qwen/Qwen2.5-7B-Instruct \
+     --host 0.0.0.0 --port 8000 \
+     --enable-auto-tool-choice \
+     --tool-call-parser hermes
+
+5) Detach from tmux with Ctrl+B then D (server keeps running in background)
+
+6) Test it's alive from another shell:
+   curl http://localhost:8000/v1/models
+
+7) Clone the repo and pick up where we left off:
+   git clone https://github.com/<your-fork>/Radeon-hackathon-2026-07.git
+   cd Radeon-hackathon-2026-07/toolguard
+   git pull   (ALWAYS pull before starting work, ALWAYS push after)
+
+REMINDER: /workspace is persistent, but our own CODE lives in git now,
+not just on the instance. Commit + push before ending every session,
+no exceptions this time.
