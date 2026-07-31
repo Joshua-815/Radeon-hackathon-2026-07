@@ -1,17 +1,18 @@
 #!/bin/bash
 # setup_env.sh
 # Run this ONCE every time you launch a fresh Radeon Cloud instance:
-#   source /workspace/setup_env.sh
+#   source /persistent/Radeon-hackathon-2026-07/ToolGuard/setup_env.sh
 #
-# Purpose: point everything at /workspace (persistent storage) instead of
-# the instance's local disk, so model downloads / caches survive a
-# destroy+relaunch. (This is the fix we figured out on Day 2 originally.)
+# Purpose: point everything at /persistent (the storage that ACTUALLY
+# survives a destroy+relaunch - confirmed Aug 1 2026, /workspace does NOT
+# survive despite what we originally assumed) instead of /workspace or
+# the instance's local disk.
 
-# --- Hugging Face model cache -> persistent /workspace, not local disk ---
-export HF_HUB_CACHE=/workspace/hf_cache
+# --- Hugging Face model cache -> persistent, not /workspace, not local disk ---
+export HF_HUB_CACHE=/persistent/hf_cache
 
 # --- vLLM compiled-graph cache -> also persistent, avoids full rebuild each launch ---
-export VLLM_CACHE_ROOT=/workspace/vllm_cache
+export VLLM_CACHE_ROOT=/persistent/vllm_cache
 mkdir -p "$VLLM_CACHE_ROOT"
 
 # --- Make sure the ROCm venv is on PATH for this shell ---
