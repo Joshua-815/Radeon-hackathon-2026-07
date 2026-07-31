@@ -36,3 +36,4 @@ Every time you launch a fresh Radeon Cloud instance, run these in order:
 REMINDER: /workspace is persistent, but the CODE lives in git.
 Commit + push before ending every session, no exceptions.
 EOF
+SSH push test - Fri Jul 31 06:59:42 UTC 2026
