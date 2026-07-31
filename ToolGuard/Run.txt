@@ -1,7 +1,15 @@
 TOOLGUARD - INSTANCE STARTUP NOTES
-(keep this file in the git repo, NOT just on the instance, from now on)
+(keep this file in the git repo, NOT just on the instance)
 
-Every time you launch a fresh Radeon Cloud instance:
+Every time you launch a fresh Radeon Cloud instance, run these in order:
+
+0) Fix git/GitHub connectivity (needed on fresh instances):
+   apt update && apt install -y ca-certificates
+   update-ca-certificates
+   git config --global http.sslVerify false
+   git config --global credential.helper store
+   git config --global user.name "Joshua-815"
+   git config --global user.email "<your Joshua-815 email>"
 
 1) source /workspace/setup_env.sh
 
@@ -20,11 +28,11 @@ Every time you launch a fresh Radeon Cloud instance:
 6) Test it's alive from another shell:
    curl http://localhost:8000/v1/models
 
-7) Clone the repo and pick up where we left off:
-   git clone https://github.com/<your-fork>/Radeon-hackathon-2026-07.git
-   cd Radeon-hackathon-2026-07/toolguard
+7) Clone the repo and pick up where you left off:
+   git clone https://github.com/Joshua-815/Radeon-hackathon-2026-07.git
+   cd Radeon-hackathon-2026-07/ToolGuard
    git pull   (ALWAYS pull before starting work, ALWAYS push after)
 
-REMINDER: /workspace is persistent, but our own CODE lives in git now,
-not just on the instance. Commit + push before ending every session,
-no exceptions this time.
+REMINDER: /workspace is persistent, but the CODE lives in git.
+Commit + push before ending every session, no exceptions.
+EOF
