@@ -71,7 +71,8 @@ if __name__ == "__main__":
         while True:
             all_calls = load_calls(limit=1000)
             shown_calls = all_calls[:15]
-            print(CLEAR + render(all_calls, shown_calls))
-            time.sleep(2)
+            print(CLEAR + render(all_calls, shown_calls), flush=True)
+            for _ in range(20):  # sleep in small steps so Ctrl+C responds fast
+                time.sleep(0.1)
     except KeyboardInterrupt:
-        print("\nDashboard stopped.")
+        print("\nDashboard stopped.", flush=True)
