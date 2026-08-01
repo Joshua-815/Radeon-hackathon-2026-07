@@ -1,7 +1,6 @@
-# Fill in exact versions as you install them today - pin everything,
-# so a fresh instance can reproduce your setup without guessing.
-langgraph
-openai
-fastapi
-uvicorn
-requests
+# Exact versions confirmed from what's actually installed and used
+# in our code as of Day 3 (Aug 1, 2026). Update this file if a new
+# package gets added later - bootstrap.sh installs from this list.
+requests==2.32.5
+fastapi==0.135.1
+uvicorn==0.42.0
