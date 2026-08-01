@@ -16,3 +16,4 @@ venv/
 # OS junk
 .DS_Store
 .ipynb_checkpoints/
+dashboard/call_log.jsonl
