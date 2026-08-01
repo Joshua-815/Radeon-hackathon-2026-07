@@ -2,78 +2,59 @@ TOOLGUARD - INSTANCE STARTUP NOTES
 (keep this file in the git repo, NOT just on the instance)
 
 === IMPORTANT: /workspace does NOT survive a destroy/relaunch ===
-Confirmed Aug 1, 2026. Only /persistent actually survives. Everything
-below assumes you're working inside /persistent, not /workspace.
+Confirmed Aug 1, 2026. Only /persistent actually survives.
 
-=== Every time you get a FRESH instance, run these in order ===
+=== Every time you get a FRESH instance ===
 
-0) Restore your SSH key + git identity (one line, does everything):
-   source /persistent/restore_ssh.sh
+1) Clone the repo (first time only - if already cloned, just cd + git pull):
+   Note: this first clone still needs manual SSH setup since
+   restore_ssh.sh doesn't exist yet on a truly blank /persistent.
+   See "FIRST EVER SETUP" section below if /persistent is empty.
 
-   If /persistent/restore_ssh.sh doesn't exist yet (very first time
-   ever on a brand new /persistent volume), set it up once:
-
-     mkdir -p /persistent/ssh_backup
-     ssh-keygen -t ed25519 -C "toolguard-instance" -N "" -f ~/.ssh/id_ed25519
-     cat ~/.ssh/id_ed25519.pub
-     ## -> copy that line, add it at https://github.com/settings/keys
-
-     cat > ~/.ssh/config << 'SSHEOF'
-     Host github.com
-       Hostname ssh.github.com
-       Port 443
-       User git
-     SSHEOF
-
-     ## NOTE: plain HTTPS to github.com is intercepted/cached on this
-     ## AMD network (confirmed Aug 1 2026 - wrong DNS IP for github.com,
-     ## stale ref errors on repeat pushes). SSH tunneled over port 443
-     ## routes around it. Port 22 direct is also blocked outbound.
-
-     cp ~/.ssh/id_ed25519 ~/.ssh/id_ed25519.pub ~/.ssh/config /persistent/ssh_backup/
-
-     cat > /persistent/restore_ssh.sh << 'RESTOREEOF'
-     #!/bin/bash
-     mkdir -p ~/.ssh
-     cp /persistent/ssh_backup/id_ed25519 ~/.ssh/
-     cp /persistent/ssh_backup/id_ed25519.pub ~/.ssh/
-     cp /persistent/ssh_backup/config ~/.ssh/
-     chmod 700 ~/.ssh
-     chmod 600 ~/.ssh/id_ed25519
-     chmod 644 ~/.ssh/id_ed25519.pub ~/.ssh/config
-     ssh -T git@github.com
-     git config --global user.name "Joshua-815"
-     git config --global user.email "<your Joshua-815 email>"
-     RESTOREEOF
-     chmod +x /persistent/restore_ssh.sh
-
-1) Clone (or if already cloned, cd into) the repo - USE SSH, not HTTPS:
    cd /persistent
    git clone git@github.com:Joshua-815/Radeon-hackathon-2026-07.git
    cd Radeon-hackathon-2026-07/ToolGuard
-   git pull   (ALWAYS pull before starting work, ALWAYS push after)
 
-2) Fix ca-certificates (only needed if you hit cert errors elsewhere):
-   apt update && apt install -y ca-certificates
-   update-ca-certificates
+2) Run the bootstrap script - does everything else in one command:
+   bash scripts/bootstrap.sh
 
-3) source setup_env.sh
-   (points model cache at /persistent/hf_cache - survives restarts now)
+3) Start the model server:
+   scripts/start_vllm.sh
+   tmux attach -t vllm    (to watch it / detach with Ctrl+B then D)
 
-4) apt update && apt install -y tmux
-
-5) tmux new -s vllm
-
-6) Inside tmux, start the model server:
-   /opt/venv/bin/vllm serve Qwen/Qwen2.5-7B-Instruct \
-     --host 0.0.0.0 --port 8000 \
-     --enable-auto-tool-choice \
-     --tool-call-parser hermes
-
-7) Detach from tmux with Ctrl+B then D (server keeps running in background)
-
-8) Test it's alive from another shell:
+4) Test it's alive from another shell:
    curl http://localhost:8000/v1/models
+
+=== FIRST EVER SETUP (only if /persistent/restore_ssh.sh doesn't exist) ===
+
+   mkdir -p /persistent/ssh_backup
+   ssh-keygen -t ed25519 -C "toolguard-instance" -N "" -f ~/.ssh/id_ed25519
+   cat ~/.ssh/id_ed25519.pub
+   ## -> copy that line, add it at https://github.com/settings/keys
+
+   cat > ~/.ssh/config << 'SSHEOF'
+   Host github.com
+     Hostname ssh.github.com
+     Port 443
+     User git
+   SSHEOF
+
+   cp ~/.ssh/id_ed25519 ~/.ssh/id_ed25519.pub ~/.ssh/config /persistent/ssh_backup/
+
+   cat > /persistent/restore_ssh.sh << 'RESTOREEOF'
+   #!/bin/bash
+   mkdir -p ~/.ssh
+   cp /persistent/ssh_backup/id_ed25519 ~/.ssh/
+   cp /persistent/ssh_backup/id_ed25519.pub ~/.ssh/
+   cp /persistent/ssh_backup/config ~/.ssh/
+   chmod 700 ~/.ssh
+   chmod 600 ~/.ssh/id_ed25519
+   chmod 644 ~/.ssh/id_ed25519.pub ~/.ssh/config
+   ssh -T git@github.com
+   git config --global user.name "Joshua-815"
+   git config --global user.email "<your Joshua-815 email>"
+   RESTOREEOF
+   chmod +x /persistent/restore_ssh.sh
 
 === End of every session ===
 Commit + push before ending every session, no exceptions:
