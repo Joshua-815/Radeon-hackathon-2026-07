@@ -46,7 +46,7 @@ def render(calls_all, calls_shown):
     )
     out.append(f"Effective reliability: {BOLD}{GREEN if reliability >= 90 else YELLOW}{reliability:.1f}%{RESET}")
     out.append("=" * 78)
-    out.append(f"{BOLD}{'TIME':<20}{'OUTCOME':<20}{'FIXED':<8}{'CALL':<30}{RESET}")
+    out.append(f"{BOLD}{'TIME':<20}{'OUTCOME':<23}{'FIXED':<8}{'CALL':<30}{RESET}")
     out.append("-" * 78)
 
     if not calls_shown:
@@ -58,11 +58,11 @@ def render(calls_all, calls_shown):
         call_str = truncate(c["final_call"], 28) if c["final_call"] else "-"
         color = GREEN if c["outcome"] == "NORMAL" else (GREEN if c["fixed_by_toolguard"] else RED)
         out.append(
-            f"{c['timestamp']:<20}{color}{c['outcome']:<20}{RESET}{fixed_str:<17}{call_str:<30}"
+            f"{c['timestamp']:<20}{color}{c['outcome']:<23}{RESET}{fixed_str:<17}{call_str:<30}"
         )
 
     out.append("-" * 78)
-    out.append("(Ctrl+C to exit - refreshes every 2 seconds)")
+    out.append("(Refreshes every 2 seconds. To stop: from another terminal, run: pkill -f terminal_dashboard.py)")
     return "\n".join(out)
 
 
