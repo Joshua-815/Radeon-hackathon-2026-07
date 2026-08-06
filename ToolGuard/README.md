@@ -8,7 +8,7 @@ Built for the AMD AI DevMaster Hackathon 2026, Track 2: Development & Local Depl
 
 - Project Specification Document: [ToolGuard_Project_Specification](docs/ToolGuard_Project_Specification.pdf)
 - Slides: [ToolGuard_Slides](docs/ToolGuard_Slides.pdf)
-- Demo Video: [All About ToolGuard](https://www.youtube.com/watch?v=BUsXmg0NiZc)
+- Demo Video: [All About ToolGuard](https://youtu.be/BdFQvmEUnK0?si=BktMk_uLhSkha4ij)
 
 ---
 
