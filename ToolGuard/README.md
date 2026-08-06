@@ -62,11 +62,7 @@ Measured over 5 real trials against our live model, steady state (excluding one-
 This is enabled by ROCm-compatible vLLM optimizations active throughout our setup, confirmed directly in server logs (not assumed): chunked prefill (max_num_batched_tokens=2048), prefix caching, and ahead-of-time CUDA graph compilation specific to this GPU's architecture. Full raw results: benchmarks/inference_speed_results.json
 
 ## 5. Architecture
-
-    [Agent] --tool call attempt--> [ToolGuard] --checked/repaired call--> [Tools]
-                                        |
-                                        v
-                                [Live Dashboard]
+![ToolGuard Architecture](docs/toolguard_architecture.svg)
 
 The agent sends a request to the local model. If the model's response is a valid tool call, ToolGuard passes it straight through untouched. If it's broken, ToolGuard detects exactly how, then hands the broken output back to the model with corrective instructions, gets a repaired response, and verifies the repair before passing it on. Every outcome (fixed or not) is logged and shown live on the dashboard.
 
