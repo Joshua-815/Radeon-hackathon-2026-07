@@ -4,6 +4,12 @@ A reliability layer for AI agents running locally on AMD (ROCm) GPUs.
 
 Built for the AMD AI DevMaster Hackathon 2026, Track 2: Development & Local Deployment of Private AI Agents.
 
+## Submission Materials
+
+- Project Specification Document: docs/ToolGuard_Project_Specification.pdf
+- Slides: docs/ToolGuard_Slides.pdf
+- Demo Video: [All About ToolGuard](https://www.youtube.com/watch?v=BUsXmg0NiZc)
+
 ---
 
 ## 1. The problem, in plain words
