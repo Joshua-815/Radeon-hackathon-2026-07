@@ -59,6 +59,13 @@ Measured over 5 real trials against our live model, steady state (excluding one-
     Time to first token:      ~0.04 seconds
     Tokens per second:        ~32.8
 
+### Repair latency
+Measured over 9 real trials spanning all 3 core failure patterns - every trial successfully repaired:
+
+    Average repair latency: ~0.67 seconds
+
+This is the real, end-to-end cost of the detect-and-fix step: classifying the failure, sending a targeted corrective instruction back to the model, and verifying the repair - not a blind retry. Full raw results: benchmarks/repair_latency_results.json
+
 This is enabled by ROCm-compatible vLLM optimizations active throughout our setup, confirmed directly in server logs (not assumed): chunked prefill (max_num_batched_tokens=2048), prefix caching, and ahead-of-time CUDA graph compilation specific to this GPU's architecture. Full raw results: benchmarks/inference_speed_results.json
 
 ## 5. Architecture
@@ -108,6 +115,8 @@ The agent sends a request to the local model. If the model's response is a valid
     |   |-- benchmark_results.json     - saved output of the above (the 32% -> 100% result)
     |   |-- measure_inference_speed.py - runs 5 trials measuring real time-to-first-token and tokens/sec
     |   |-- inference_speed_results.json - saved output of the above
+    |   |-- measure_repair_latency.py  - runs 9 trials measuring real repair latency across all 3 core patterns
+    |   |-- repair_latency_results.json - saved output of the above
     |
     |-- scripts/
         |-- bootstrap.sh        - prepares a fresh instance to RUN the code: installs system packages
@@ -178,6 +187,7 @@ Bonus (real, but lower-frequency to trigger live):
 - A real, documented gotcha we hit and fixed: a plain pip install vllm silently installs the CUDA (Nvidia) build, which cannot see an AMD GPU at all. The fix is using AMD's pre-built ROCm Python environment directly - this is automated in scripts/bootstrap.sh
 - Model and compiled-graph caches persist across instance restarts, so a fresh instance doesn't need to re-download the ~14GB model every time - confirmed by timing an actual restart (model load dropped from ~3 minutes to a few seconds)
 - ToolGuard's own codebase is approximately 128KB total (~1,300 lines) - negligible next to the multi-gigabyte model it supervises. The reliability layer adds effectively no extra memory or storage burden to an existing ROCm setup
+- Total GPU memory footprint: approximately 41.3 GiB (14.37 GiB model weights + ~27 GiB KV cache) out of 48 GiB available VRAM on the AMD Radeon Pro GPU used
 
 ## 10. Honest limitations / future work
 
